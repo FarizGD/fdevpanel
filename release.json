@@ -1,10 +1,10 @@
 {
-  "version": "1.0.0",
-  "tag": "v1.0.0",
+  "version": "1.0.1",
+  "tag": "v1.0.1",
   "asset": "panel.deb",
   "package": "fdev-vsc",
   "architecture": "aarch64",
-  "sha256": "1172bde38b86ae2902d11b4fe3ca75bc818bca9192f425da337320658f7144cc",
+  "sha256": "f5256654cce5edd0ab65343a2fe86c8e86f5e882f9e25f2e3a2c47a60086f90d",
   "apt_fingerprint": "D97D66095EB7DCD5E5728823600B3837C2A7DA78",
   "repository": "https://farizgd.github.io/fdevpanel/apt",
   "suite": "termux",

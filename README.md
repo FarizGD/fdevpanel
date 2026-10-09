@@ -129,7 +129,7 @@ are limited to the relevant build, APT-write and Pages-deploy jobs.
 For a new package release, upload the native-built binary as `panel.deb`, update
 `release.json` with its tag/version/SHA256, and push main. The action records
 package-version metadata; do not reuse a version for different package contents.
-The initial release is v1.0.0. Hosted Linux CI does not cross-build Wings or pretend
+The initial native release is v1.0.0; v1.0.1 adds Section/priority metadata required for the signed APT repository. Hosted Linux CI does not cross-build Wings or pretend
 a generic Linux binary works on Android; it publishes the package tested in Termux.
 
 Keep the private APT signing key backed up privately. Only its public half is in

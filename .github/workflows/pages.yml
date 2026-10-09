@@ -65,6 +65,7 @@ jobs:
           dpkg-deb -f ".local/package/$asset" Package Version Architecture
           test "$(dpkg-deb -f ".local/package/$asset" Package)" = fdev-vsc
           test "$(dpkg-deb -f ".local/package/$asset" Architecture)" = aarch64
+          test "$(dpkg-deb -f ".local/package/$asset" Section)" = net
           { echo 'PUBLIC_KEY<<FDEV_PUBLIC_KEY'; cat public/public.key; echo 'FDEV_PUBLIC_KEY'; } >> "$GITHUB_ENV"
       - name: Host your own APT repo on GitHub (Marketplace v4)
         uses: MauroDruwel/apt-repo-action@2ced6fde712c7fe3f572e2e611a4f2a879d86595
@@ -72,7 +73,8 @@ jobs:
           GIT_AUTHOR_NAME: FarizDev APT
           GIT_COMMITTER_NAME: FarizDev APT
         with:
-          github_token: ${{ github.token }}
+          # v4 interpolates this input before @github.com; provide valid Basic auth.
+          github_token: x-access-token:${{ github.token }}
           repo_supported_arch: aarch64
           repo_supported_version: termux
           file: .local/package/panel.deb
