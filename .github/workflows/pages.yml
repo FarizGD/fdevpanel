@@ -93,7 +93,10 @@ jobs:
           grep -q '^Package: fdev-vsc$' .local/published-apt/repo/dists/termux/main/binary-aarch64/Packages
           gpg --batch --dearmor --output .local/repo-key.gpg public/public.key
           gpgv --keyring "$PWD/.local/repo-key.gpg" .local/published-apt/repo/dists/termux/Release.gpg .local/published-apt/repo/dists/termux/Release
-          cmp public/public.key .local/published-apt/public.key
+          # Action inputs can trim the ASCII armor's final newline; compare key identity.
+          published_fingerprint=$(gpg --batch --with-colons --show-keys .local/published-apt/public.key | awk -F: '/^fpr:/{print $10; exit}')
+          expected_fingerprint=$(node -p "require('./release.json').apt_fingerprint")
+          test "$published_fingerprint" = "$expected_fingerprint"
           mkdir -p .local/apt-artifact/apt
           cp -a .local/published-apt/repo/dists .local/published-apt/repo/pool .local/apt-artifact/apt/
           cp public/public.key .local/apt-artifact/public.key
