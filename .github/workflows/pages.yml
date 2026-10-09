@@ -49,7 +49,17 @@ jobs:
           mkdir -p .local/package
           tag=$(node -p "require('./release.json').tag")
           asset=$(node -p "require('./release.json').asset")
-          gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern "$asset" --dir .local/package
+          # A main push may precede completion of a large native release upload.
+          available=false
+          for attempt in $(seq 1 60); do
+            if gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern "$asset" --dir .local/package --clobber; then
+              available=true
+              break
+            fi
+            echo "Waiting for release asset ($attempt/60)..."
+            sleep 5
+          done
+          test "$available" = true || { echo 'Release asset not available within five minutes.'; exit 1; }
           expected=$(node -p "require('./release.json').sha256")
           printf '%s  %s\n' "$expected" ".local/package/$asset" | sha256sum -c -
           dpkg-deb -f ".local/package/$asset" Package Version Architecture
