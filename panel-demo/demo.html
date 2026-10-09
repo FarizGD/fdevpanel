@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0c1119">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; frame-src 'none'">
+<title>FDevPanel — Interactive demo</title>
+<link rel="icon" href="./fdev-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./themes/pterodactyl/css/fdev-tokens.css">
+<link rel="stylesheet" href="./themes/pterodactyl/css/fdev-workspace.css">
+<style>
+.demo-ribbon{position:sticky;top:0;z-index:40;background:#102538;color:#c6e3ff;border-bottom:1px solid #315a7c;padding:10px 16px;font:12px 'IBM Plex Sans',sans-serif;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;justify-content:space-between}.demo-ribbon a{color:#90c9ff;min-height:32px;display:inline-flex;align-items:center}.demo-ribbon strong{color:#e6b773;letter-spacing:.1em;font-size:10px;margin-right:10px}.demo-ribbon span{overflow-wrap:anywhere}@media(max-width:400px){.demo-ribbon{font-size:11px;padding:8px 12px;gap:0 10px}.demo-ribbon a{min-height:36px}}
+</style>
+<script>
+window.PterodactylUser={uuid:'00000000-0000-4000-8000-000000000099',username:'Fariz Demo',email:'demo@example.invalid',root_admin:true,use_totp:false,language:'en',created_at:'2026-01-01T00:00:00Z',updated_at:'2026-01-01T00:00:00Z'};
+window.SiteConfiguration={name:'FDevPanel',locale:'en',recaptcha:{enabled:false,siteKey:''}};
+</script>
+</head>
+<body class="fdev-client">
+<div class="demo-ribbon"><span><strong>DEMO MODE</strong>Real Panel UI · sample servers · no live connections</span><a href="../">← FDevPanel homepage</a></div>
+<div id="modal-portal"></div><div id="app"></div>
+<noscript>Enable JavaScript to explore the copied Panel frontend.</noscript>
+<script src="%BUNDLE%" crossorigin="anonymous"></script>
+</body>
+</html>

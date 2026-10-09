@@ -1,0 +1,116 @@
+name: Publish FDevPanel homepage, demo and signed APT repo
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  release:
+    types: [published]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: fdevpanel-publish-${{ github.event_name == 'pull_request' && github.ref || 'production' }}
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install copied Panel frontend dependencies
+        run: npm install --global --force yarn@1.22.22 && yarn --cwd panel-demo install --frozen-lockfile
+      - name: Test sample API and copied Panel types
+        run: npm test && yarn --cwd panel-demo tsc
+      - name: Build actual copied Panel and homepage
+        run: npm run build:panel && npm run build
+      - name: Upload built website
+        uses: actions/upload-artifact@v4
+        with:
+          name: fdevpanel-site
+          path: dist
+          include-hidden-files: true
+  apt:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify signing secret and download tested native package
+        env:
+          GH_TOKEN: ${{ github.token }}
+          APT_PRIVATE_KEY: ${{ secrets.APT_PRIVATE_KEY }}
+        run: |
+          test -n "$APT_PRIVATE_KEY" || { echo 'Set the APT_PRIVATE_KEY repository secret before publishing.'; exit 1; }
+          mkdir -p .local/package
+          tag=$(node -p "require('./release.json').tag")
+          asset=$(node -p "require('./release.json').asset")
+          gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern "$asset" --dir .local/package
+          expected=$(node -p "require('./release.json').sha256")
+          printf '%s  %s\n' "$expected" ".local/package/$asset" | sha256sum -c -
+          dpkg-deb -f ".local/package/$asset" Package Version Architecture
+          test "$(dpkg-deb -f ".local/package/$asset" Package)" = fdev-vsc
+          test "$(dpkg-deb -f ".local/package/$asset" Architecture)" = aarch64
+          { echo 'PUBLIC_KEY<<FDEV_PUBLIC_KEY'; cat public/public.key; echo 'FDEV_PUBLIC_KEY'; } >> "$GITHUB_ENV"
+      - name: Host your own APT repo on GitHub (Marketplace v4)
+        uses: MauroDruwel/apt-repo-action@2ced6fde712c7fe3f572e2e611a4f2a879d86595
+        env:
+          GIT_AUTHOR_NAME: FarizDev APT
+          GIT_COMMITTER_NAME: FarizDev APT
+        with:
+          github_token: ${{ github.token }}
+          repo_supported_arch: aarch64
+          repo_supported_version: termux
+          file: .local/package/panel.deb
+          file_target_version: termux
+          private_key: ${{ secrets.APT_PRIVATE_KEY }}
+          public_key: ${{ env.PUBLIC_KEY }}
+          target_repository: ${{ github.repository }}
+          page_branch: apt-repository
+          repo_folder: repo
+      - name: Read and verify generated signed repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git clone --depth 1 --branch apt-repository "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" .local/published-apt
+          test -s .local/published-apt/repo/dists/termux/main/binary-aarch64/Packages
+          grep -q '^Package: fdev-vsc$' .local/published-apt/repo/dists/termux/main/binary-aarch64/Packages
+          gpg --batch --dearmor --output .local/repo-key.gpg public/public.key
+          gpgv --keyring "$PWD/.local/repo-key.gpg" .local/published-apt/repo/dists/termux/Release.gpg .local/published-apt/repo/dists/termux/Release
+          cmp public/public.key .local/published-apt/public.key
+          mkdir -p .local/apt-artifact/apt
+          cp -a .local/published-apt/repo/dists .local/published-apt/repo/pool .local/apt-artifact/apt/
+          cp public/public.key .local/apt-artifact/public.key
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fdevpanel-apt
+          path: .local/apt-artifact
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: [build, apt]
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: fdevpanel-site
+          path: dist
+      - uses: actions/download-artifact@v4
+        with:
+          name: fdevpanel-apt
+          path: dist
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - uses: actions/deploy-pages@v5
+        id: deployment

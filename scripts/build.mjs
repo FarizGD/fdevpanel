@@ -1,0 +1,23 @@
+import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const dist = path.join(root, 'dist');
+await rm(dist, { recursive: true, force: true });
+await mkdir(path.join(dist, 'assets'), { recursive: true });
+await cp(path.join(root, 'public'), path.join(dist, 'assets'), { recursive: true });
+for (const name of ['app.js', 'styles.css']) await cp(path.join(root, 'src', name), path.join(dist, 'assets', name));
+await cp(path.join(root, 'panel-demo/public'), path.join(dist, 'demo'), { recursive: true });
+const manifest = JSON.parse(await readFile(path.join(root, 'panel-demo/public/assets/manifest.json'), 'utf8'));
+const entry = manifest['main.js'];
+if (!entry?.src?.startsWith('/fdevpanel/demo/assets/')) throw new Error('Build the copied Panel with npm run build:panel first');
+const demo = (await readFile(path.join(root, 'panel-demo/demo.html'), 'utf8')).replace('%BUNDLE%', entry.src);
+await writeFile(path.join(dist, 'demo/index.html'), demo);
+for (const name of ['public.key', 'key-fingerprint.txt', 'install.sh']) await cp(path.join(root, 'public', name), path.join(dist, name));
+await cp(path.join(root, 'release.json'), path.join(dist, 'release.json'));
+const html = await readFile(path.join(root, 'index.html'), 'utf8');
+if (/(?:src|href)=["']\/assets\//.test(html)) throw new Error('Root-relative assets would break /fdevpanel/');
+await writeFile(path.join(dist, 'index.html'), html);
+await writeFile(path.join(dist, '.nojekyll'), '');
+console.log('Built dist/ — static assets, no dependencies, ready for /fdevpanel/');

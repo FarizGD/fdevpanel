@@ -1,0 +1,13 @@
+.button {
+    @apply px-4 py-2 inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium;
+    @apply transition-colors duration-150 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-blue-400;
+    min-height: 36px;
+    &.small { @apply px-3 py-0 h-8 text-sm; min-height: 32px; }
+    &.large { @apply px-5 py-3; }
+    &.secondary { @apply text-gray-100 border border-gray-600 bg-transparent; }
+    &:disabled { @apply cursor-not-allowed opacity-50; }
+    &.square { @apply p-0 w-10 h-10; &.small { @apply w-8 h-8; } }
+}
+.primary { background: var(--fdev-blue); @apply text-white; &:hover:not(:disabled) { background: #168bd2; } &.secondary { background: transparent; &:hover:not(:disabled) { background: #007acc20; } } }
+.text { background: var(--fdev-raised); @apply text-gray-100 border border-gray-600; &:hover:not(:disabled) { @apply bg-gray-600; } &.secondary { background: transparent; } }
+.danger { @apply bg-red-800 text-red-50; &:hover:not(:disabled) { @apply bg-red-700; } &.secondary { background: transparent; @apply text-red-300 border-red-800; &:hover:not(:disabled) { @apply bg-red-900; } } }

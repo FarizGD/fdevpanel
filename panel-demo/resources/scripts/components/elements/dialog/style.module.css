@@ -1,0 +1,39 @@
+.container {
+    @apply flex min-h-full items-center justify-center p-4 text-center;
+}
+
+.panel {
+    @apply relative flex flex-col min-h-0 bg-gray-800 border border-gray-600 rounded-lg max-w-xl w-full mx-auto shadow-lg text-left;
+    @apply ring-1 ring-gray-900 ring-opacity-80;
+}
+
+.title {
+    @apply font-header text-xl font-medium mb-2 text-gray-50 pr-4;
+}
+
+.close_icon {
+    @apply w-5 h-5 group-hover:text-white transition-colors duration-100;
+}
+
+.dialog_icon {
+    @apply flex items-center justify-center w-10 h-10 rounded-full mr-4;
+
+    &.danger {
+        @apply bg-red-500 text-red-50;
+    }
+
+    &.warning {
+        @apply bg-yellow-600 text-yellow-50;
+    }
+
+    &.success {
+        @apply bg-green-600 text-green-50;
+    }
+
+    &.info {
+        @apply bg-primary-500 text-primary-50;
+    }
+}
+
+.panel { max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow-wrap: anywhere; padding-top: 40px; }
+.panel > :last-child button { min-width: 44px; min-height: 44px; }
