@@ -1,0 +1,19 @@
+Package: fdev-vsc
+Version: 1.0.1
+Architecture: aarch64
+Maintainer: FarizDev
+Depends: bash, python, php, php-sodium, composer, mariadb, redis, nodejs-lts | nodejs, yarn, golang, util-linux, curl, jq, tar, termux-tools
+Installed-Size: 54868
+Fdev-Prefix: /data/data/com.termux/files/usr
+Homepage: https://github.com/FarizGD/fdevpanel
+Priority: optional
+Section: net
+Filename: pool/main/f/fdev-vsc/fdev-vsc_1.0.1_aarch64.deb
+Size: 56207552
+SHA256: f5256654cce5edd0ab65343a2fe86c8e86f5e882f9e25f2e3a2c47a60086f90d
+SHA1: b05e2a1cf3673eedf243d7034785d5054ce9a785
+MD5sum: 5347889270e72619cbfa7b9890709340
+Description: FDev-VSC native Termux Panel and Wings
+ Real Pterodactyl sources, built frontend, PHP dependencies, native Wings,
+ native eggs, interactive setup and project-owned services. No user data.
+

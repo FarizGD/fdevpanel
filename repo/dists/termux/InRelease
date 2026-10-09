@@ -1,0 +1,34 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Codename: termux
+Date: Fri, 09 Oct 2026 12:08:19 UTC
+Architectures: aarch64
+Components: main
+Description: FarizGD/fdevpanel
+MD5Sum:
+ a5a4baa85e0fcb48564033306f396164 799 main/binary-aarch64/Packages
+ 6cfa8b593fd92f3cf74bfe45ceff56a9 556 main/binary-aarch64/Packages.gz
+ c65a39f6326c3c03e8bf51d9d1a80a2a 69 main/binary-aarch64/Release
+SHA1:
+ b746557f19a036235d186bfd6beda2b1b7299fa2 799 main/binary-aarch64/Packages
+ bd6305b6bf281cf705543c89c23cab32499b54de 556 main/binary-aarch64/Packages.gz
+ dad52ab6b5dd9363094c04cf1cb074da34db1071 69 main/binary-aarch64/Release
+SHA256:
+ 6575eb27e0fbc648062b9f3456f534199ec275017f1c76267a83a968c5b2adae 799 main/binary-aarch64/Packages
+ e242f5a3f545f62c5c6fcb9f1706714169fb89d14a490b7a2a57ec5a6543035a 556 main/binary-aarch64/Packages.gz
+ fca731ac81a98c201af8190ddbd40fd1696f6045bde529f944ca449b39ffed7b 69 main/binary-aarch64/Release
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAEBCgAdFiEE2X1mCV633NXlcogjYAs4N8Kn2ngFAmrI2TMACgkQYAs4N8Kn
+2nh80gv8DGsblVbg5nwLgCcPP2yuUb4sv/XxdwPY2z3feE4X4pPOyD0bJYi4a6vY
+nlqyvRxX15Fb56ZvtE385CyM1P6OqjuSUT7pPxB4vsKg9mDMIx7ZvHnRvKGQP2qB
+B+gZf31yqdZnVjh0OeOCH0tzX30lRP9S4MlOXhEAZ6+S2RCziVAnelZRQokyeGLV
+eGJE26jZOz8tcVqTDYpFpUdlJx7tIM7NNNyZi2UZJA94vJVraCRqeRP7NwYsEyRC
+rroOV6M6ociTSLZCXMwz7RvHaR1gJLz9pSwllIFdhRQbNN56LvADlwX//08Li/rX
+aqZFZFBRjmQbJL0aLnOnAPZf8yLhYPwoho3emulE1SH+aC0kR6eSivHkwkknP+AA
+7yBFYFGMXzl2QzFbnhphTa307UJnrQxgRUm180UbPAjUfLR8s7WkyLXWzxZnLH3h
++KDoC9Khj1aPhcS+fV3C20XVrddUKqy8PNzln98qqkgL9OQIdxGY0UccIdIak7di
+/DRolRmB
+=c023
+-----END PGP SIGNATURE-----
