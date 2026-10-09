@@ -16,14 +16,14 @@ repository publication workflow.
 In native Termux:
 
 ```sh
-pkg install -y curl
+command -v curl >/dev/null || pkg install -y curl
 curl -fsSL https://farizgd.github.io/fdevpanel/install.sh -o "$PREFIX/tmp/fdevpanel-install.sh"
 bash "$PREFIX/tmp/fdevpanel-install.sh"
 ```
 
 The installer verifies the repository public-key fingerprint, adds a dedicated
 `signed-by` APT source in `$PREFIX/etc/apt/sources.list.d/fdevpanel.list`, updates
-APT, installs the `fdev-vsc` package and opens its interactive wizard. The release
+the Termux main and FDevPanel indexes, installs the `fdev-vsc` package and opens its interactive wizard. The release
 asset is `panel.deb`, containing both the modified Panel and native Wings.
 Dependencies are resolved from Termux repositories. No `sudo` or `apt-key`.
 
@@ -152,3 +152,18 @@ copied xterm console accepted input and displayed simulated output. Real UI powe
 controls changed the simulated lifecycle. Browser resource checks found no escaped
 backend requests. The native package itself previously passed a fresh database/node
 installation and authenticated real Panel/Wings lifecycle integration.
+
+The installer scopes its APT calls to Termux main and FDevPanel; it does not refresh or alter optional X11/root repositories. This avoids blocking native server installation on unrelated optional-mirror failures. Errors in either required repository still stop installation.
+
+Published-site checks also passed: all30 browser route/viewport checks plus actual
+copied xterm input/output and simulated power controls on the HTTPS site. Native
+Termux APT verified the published Release signature and pinned public-key fingerprint,
+then downloaded the exact v1.0.1 ARM64 package with a matching SHA256. The complete
+installer added the signed GitHub repository, installed1.0.1 through APT and completed
+setup; existing Panel/Wings credentials remained unchanged and all six services ran.
+The unrelated X11 source remained unchanged. Actual Android reboot delivery remains
+untested and requires the Termux:Boot companion app.
+
+For an interrupted browser audit, add `--resume` to continue saved passing cases
+for the same site and source revision. Verify the real published APT repository
+without changing system sources with `python scripts/verify-apt.py`.

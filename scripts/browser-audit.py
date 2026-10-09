@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import time
 import urllib.request
 
@@ -12,6 +13,13 @@ out = root/'.local/browser'
 out.mkdir(parents=True, exist_ok=True)
 endpoint = 'http://127.0.0.1:4447'
 site = os.environ.get('FDEV_DEMO_URL', 'http://localhost:4173/fdevpanel/')
+checkpoint = out/('progress-live.json' if site.startswith('https:') else 'progress-local.json')
+revision = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
+completed = []
+if '--resume' in sys.argv and checkpoint.exists():
+    saved = json.loads(checkpoint.read_text())
+    if saved.get('site') == site and saved.get('revision') == revision:
+        completed = saved.get('pages', [])
 env = dict(os.environ, LD_LIBRARY_PATH=os.environ['PREFIX']+'/lib', MOZ_HEADLESS='1',
            MOZ_DISABLE_CONTENT_SANDBOX='1', MOZ_DISABLE_RDD_SANDBOX='1')
 log = (out/'driver.log').open('w')
@@ -65,7 +73,7 @@ try:
     if site.startswith('http://localhost:'):
         (root/'public/panel-preview.png').write_bytes(image)
         (root/'dist/assets/panel-preview.png').write_bytes(image)
-    reports = []
+    reports = completed[:]
     paths = ['', 'demo/#/', 'demo/#/account', 'demo/#/account/api', 'demo/#/server/demo0001',
              'demo/#/server/demo0001/files', 'demo/#/server/demo0001/startup',
              'demo/#/server/demo0001/network', 'demo/#/server/demo0001/schedules',
@@ -73,6 +81,8 @@ try:
     for width,height in [(390,844),(320,740),(1280,900)]:
         viewport(width,height)
         for index,path in enumerate(paths):
+            if any(r['viewport'] == width and r['path'] == path for r in completed):
+                continue
             navigate(path)
             info = execute("return {width:innerWidth,client:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth,text:document.body.innerText.slice(0,160),main:!!document.querySelector('main,#fdev-main'),errors:document.body.innerText.includes('Something went wrong'),resources:performance.getEntriesByType('resource').map(r=>r.name)};")
             assert info['width'] == width, 'Wrong viewport'
@@ -100,6 +110,7 @@ try:
                 click('button[aria-label="Close dialog"]')
             screenshot(str(width)+'-page-'+str(index))
             reports.append({'viewport':width,'path':path,'passed':True})
+            checkpoint.write_text(json.dumps({'site':site,'revision':revision,'pages':reports},indent=2))
             print('PASS:',width,path or 'homepage',flush=True)
     viewport(390,844)
     navigate('demo/#/server/demo0001')

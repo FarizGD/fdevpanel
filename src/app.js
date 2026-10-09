@@ -1,4 +1,4 @@
-export const installCommand = 'pkg install -y curl && curl -fsSL https://farizgd.github.io/fdevpanel/install.sh -o "$PREFIX/tmp/fdevpanel-install.sh" && bash "$PREFIX/tmp/fdevpanel-install.sh"';
+export const installCommand = '(command -v curl >/dev/null || pkg install -y curl) && curl -fsSL https://farizgd.github.io/fdevpanel/install.sh -o "$PREFIX/tmp/fdevpanel-install.sh" && bash "$PREFIX/tmp/fdevpanel-install.sh"';
 const modal = document.querySelector('#install-dialog');
 document.querySelector('#install-command').textContent = installCommand;
 document.querySelector('#command-fallback').value = installCommand;
